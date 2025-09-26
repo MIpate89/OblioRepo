@@ -4,17 +4,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch("https://api.oblio.eu/api/invoice", {
+    const { endpoint, data } = req.body;
+
+    const response = await fetch(`https://api.oblio.eu/api/${endpoint}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Basic " + process.env.OBLIO_API_KEY, 
+        "Authorization": "Basic " + process.env.OBLIO_API_KEY,
       },
-      body: JSON.stringify(req.body),
+      body: JSON.stringify(data),
     });
 
-    const data = await response.json();
-    res.status(response.status).json(data);
+    const result = await response.json();
+    res.status(response.status).json(result);
   } catch (error) {
     res.status(500).json({ error: "Server error", details: error.message });
   }
